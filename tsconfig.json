@@ -1,0 +1,40 @@
+{
+    "include": [
+        "./src/**/*"
+    ],
+    "compilerOptions": {
+        "strict": true,
+        "esModuleInterop": true,
+        "module": "esnext",
+        "moduleResolution": "node",
+        "lib": [
+            "dom",
+            "es2021"
+        ],
+        "jsx": "react-jsx",
+        "types": ["google.maps", "node"]
+
+    }
+}
+
+// {
+//   "compilerOptions": {
+//     "target": "ES6",                        // ou "ESNext" si tu veux les dernières features JS
+//     "lib": ["DOM", "ES2015", "DOM.Iterable"],
+//     "module": "ESNext",
+//     "moduleResolution": "Node",
+//     "esModuleInterop": true,
+//     "allowSyntheticDefaultImports": true,
+//     "resolveJsonModule": true,
+//     "isolatedModules": true,
+//     "skipLibCheck": true,
+//     "strict": true,
+//     "forceConsistentCasingInFileNames": true,
+//     "noFallthroughCasesInSwitch": true,
+//     "jsx": "react-jsx",                     // pour React 17+
+//     "baseUrl": "src",                       // optionnel : permet des imports relatifs simples
+//     "noEmit": true
+//   },
+//   "include": ["src"],
+//   "exclude": ["node_modules"]
+// }
