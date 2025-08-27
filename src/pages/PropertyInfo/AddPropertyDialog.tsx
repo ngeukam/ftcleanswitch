@@ -19,6 +19,7 @@ import useApi from "../../hooks/APIHandler";
 import { toast } from "react-toastify";
 import LocationAutocomplete from "../../components/LocationAutocomplete";
 import GoogleMapsProvider from "../../provider/googleMapProvider";
+import { Refresh } from "@mui/icons-material";
 
 type FormValues = {
   name: string;
@@ -29,11 +30,10 @@ type FormValues = {
 };
 
 interface AddPropertyDialogProps {
-  properties: any[];
-  setProperties: React.Dispatch<React.SetStateAction<any[]>>;
   handleChange: () => void;
   searchQuery: string;
   searchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleRefresh?: () => void; 
 }
 
 const Transition = React.forwardRef(function Transition(
@@ -46,11 +46,10 @@ const Transition = React.forwardRef(function Transition(
 });
 
 export default function AddPropertyDialog({
-  properties,
-  setProperties,
   handleChange,
   searchQuery,
   searchChange,
+  handleRefresh,
 }: AddPropertyDialogProps) {
   const [open, setOpen] = React.useState(false);
   const { callApi, loading } = useApi();
@@ -108,20 +107,30 @@ export default function AddPropertyDialog({
         sx={{ mb: 2 }}
       >
         <SearchInput value={searchQuery} handleChange={searchChange} />
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={handleClickOpen}
-          sx={{
-            borderRadius: 1,
-            textTransform: "none",
-            px: 3,
-            py: 1,
-            fontWeight: 600,
-          }}
-        >
-          Add Property
-        </Button>
+        <Box>
+          <Button
+            variant="outlined"
+            startIcon={<Refresh />}
+            onClick={() => handleRefresh}
+            sx={{ mr: 2, borderRadius: 1, textTransform: "none" }}
+          >
+            Refresh
+          </Button>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={handleClickOpen}
+            sx={{
+              borderRadius: 1,
+              textTransform: "none",
+              px: 3,
+              py: 1,
+              fontWeight: 600,
+            }}
+          >
+            Add Property
+          </Button>
+        </Box>
       </Stack>
 
       <Dialog

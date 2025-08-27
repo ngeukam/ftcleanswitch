@@ -20,6 +20,7 @@ import {
   CardHeader,
   CardContent,
   IconButton,
+  Paper,
 } from "@mui/material";
 import useApi from "../../hooks/APIHandler";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
@@ -85,7 +86,7 @@ export default function SalaryList() {
   ]);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedSalary, setSelectedSalary] = useState<any>(null);
-  console.log('selectedSalary',selectedSalary)
+  console.log("selectedSalary", selectedSalary);
   const [deleteLoading, setDeleteLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -473,42 +474,44 @@ export default function SalaryList() {
                 />
               </Box>
               <Divider />
-              <Box sx={{ height: 600, width: "100%" }}>
-                <DataGrid
-                  rows={salaries}
-                  columns={columns}
-                  getRowId={(row) => row.id}
-                  rowHeight={70}
-                  rowCount={totalItems}
-                  page={paginationModel.page}
-                  pageSize={paginationModel.pageSize}
-                  rowsPerPageOptions={[5, 10, 25]}
-                  onPageChange={(newPage) =>
-                    setPaginationModel((prev) => ({ ...prev, page: newPage }))
-                  }
-                  onPageSizeChange={(newPageSize) =>
-                    setPaginationModel((prev) => ({
-                      ...prev,
-                      pageSize: newPageSize,
-                    }))
-                  }
-                  paginationMode="server"
-                  loading={loading}
-                  sx={{
-                    border: "none",
-                    "& .MuiDataGrid-columnHeaders": {
-                      backgroundColor: theme.palette.grey[100],
-                      borderBottom: `2px solid ${theme.palette.divider}`,
-                    },
-                    "& .MuiDataGrid-cell": {
-                      borderBottom: `1px solid ${theme.palette.grey[100]}`,
-                    },
-                    "& .MuiDataGrid-row:hover": {
-                      backgroundColor: theme.palette.action.hover,
-                    },
-                  }}
-                />
-              </Box>
+              <Grid item xs={12}>
+                <Paper elevation={3} sx={{ p: 2 }}>
+                  <DataGrid
+                    rows={salaries}
+                    columns={columns}
+                    getRowId={(row) => row.id}
+                    rowHeight={70}
+                    rowCount={totalItems}
+                    page={paginationModel.page}
+                    pageSize={paginationModel.pageSize}
+                    rowsPerPageOptions={[5, 10, 25]}
+                    onPageChange={(newPage) =>
+                      setPaginationModel((prev) => ({ ...prev, page: newPage }))
+                    }
+                    onPageSizeChange={(newPageSize) =>
+                      setPaginationModel((prev) => ({
+                        ...prev,
+                        pageSize: newPageSize,
+                      }))
+                    }
+                    paginationMode="server"
+                    loading={loading}
+                    sx={{
+                      border: "none",
+                      "& .MuiDataGrid-columnHeaders": {
+                        backgroundColor: theme.palette.grey[100],
+                        borderBottom: `2px solid ${theme.palette.divider}`,
+                      },
+                      "& .MuiDataGrid-cell": {
+                        borderBottom: `1px solid ${theme.palette.grey[100]}`,
+                      },
+                      "& .MuiDataGrid-row:hover": {
+                        backgroundColor: theme.palette.action.hover,
+                      },
+                    }}
+                  />
+                </Paper>
+              </Grid>
             </Card>
 
             {!loading && salaries.length === 0 && (
@@ -518,7 +521,7 @@ export default function SalaryList() {
                   flexDirection: "column",
                   alignItems: "center",
                   justifyContent: "center",
-                  height: 300,
+                  // height: 300,
                   textAlign: "center",
                 }}
               >

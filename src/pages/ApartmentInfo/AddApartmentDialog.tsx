@@ -23,6 +23,7 @@ import { toast } from "react-toastify";
 import ImageUpload from "../../components/ImageUpload";
 import { currencyData } from "../../constant";
 import { getUser } from "../../utils/Helper";
+import { Refresh } from "@mui/icons-material";
 
 type FormValues = {
   number: number;
@@ -46,6 +47,7 @@ interface AddApartmentDialogProps {
   handleChange: () => void;
   searchQuery: string;
   searchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleRefresh?: () => void;
 }
 
 const Transition = React.forwardRef(function Transition(
@@ -64,6 +66,7 @@ export default function AddApartmentDialog({
   handleChange,
   searchQuery,
   searchChange,
+  handleRefresh,
 }: AddApartmentDialogProps) {
   const [open, setOpen] = React.useState(false);
   const { callApi, loading } = useApi();
@@ -123,22 +126,32 @@ export default function AddApartmentDialog({
         sx={{ mb: 2 }}
       >
         <SearchInput value={searchQuery} handleChange={searchChange} />
-        {getUser()?.role != "receptionist" && (
+        <Box>
           <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={handleClickOpen}
-            sx={{
-              borderRadius: 1,
-              textTransform: "none",
-              px: 3,
-              py: 1,
-              fontWeight: 600,
-            }}
+            variant="outlined"
+            startIcon={<Refresh />}
+            onClick={() => handleRefresh}
+            sx={{ mr: 2, borderRadius: 1, textTransform: "none" }}
           >
-            Add Apartment
+            Refresh
           </Button>
-        )}
+          {getUser()?.role != "receptionist" && (
+            <Button
+              variant="contained"
+              startIcon={<AddIcon />}
+              onClick={handleClickOpen}
+              sx={{
+                borderRadius: 1,
+                textTransform: "none",
+                px: 3,
+                py: 1,
+                fontWeight: 600,
+              }}
+            >
+              Add Apartment
+            </Button>
+          )}
+        </Box>
       </Stack>
 
       <Dialog

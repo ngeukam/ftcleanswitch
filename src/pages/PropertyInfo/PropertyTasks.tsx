@@ -432,15 +432,17 @@ function PropertyTask() {
               : theme.palette.grey[900],
           flexGrow: 1,
           overflow: "auto",
+          
         }}
       >
         <Toolbar />
-        <Container sx={{ mt: 4, mb: 4 }}>
+        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
           <AddTaskDialog
             handleChange={getTasks}
             searchQuery={searchQuery}
             searchChange={(e) => setSearchQuery(e.target.value)}
             propertyId={`${id}`}
+            handleRefresh={getTasks}
           />
           <Grid container spacing={2}>
             <Grid item xs={12}>

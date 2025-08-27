@@ -173,7 +173,7 @@ const UserInfo = () => {
           <Paper sx={{ p: 2 }}>
             <Grid container spacing={2} alignItems="center">
               <Grid item>
-                <IconButton component={Link} to="/users-list" color="inherit">
+                <IconButton onClick={() => navigate(-1)} color="inherit">
                   <ArrowBackIcon />
                 </IconButton>
               </Grid>

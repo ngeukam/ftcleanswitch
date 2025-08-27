@@ -239,8 +239,7 @@ const TaskTemplateInfo = () => {
             <Grid container spacing={2} alignItems="center">
               <Grid item>
                 <IconButton
-                  component={Link}
-                  to="/tasks-templates-list"
+                 onClick={() => navigate(-1)}
                   color="inherit"
                 >
                   <ArrowBackIcon />
@@ -432,8 +431,7 @@ const TaskTemplateInfo = () => {
                     <Grid item>
                       <Button
                         variant="outlined"
-                        component={Link}
-                        to="/tasks-templates-list"
+                        onClick={() => navigate(-1)}
                         disabled={isSubmitting}
                       >
                         Cancel

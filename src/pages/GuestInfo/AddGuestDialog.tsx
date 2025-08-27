@@ -25,12 +25,14 @@ import useApi from "../../hooks/APIHandler";
 import { toast } from "react-toastify";
 import { GuestCreateUpdateData } from "./types";
 import ImageUpload from "../../components/ImageUpload";
+import { Refresh } from "@mui/icons-material";
 
 interface AddGuestDialogProps {
   handleChange: () => void;
   searchQuery: string;
   searchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  hideButtonAdd?:boolean
+  hideButtonAdd?: boolean;
+  handleRefresh?: () => void;
 }
 
 const Transition = React.forwardRef(function Transition(
@@ -47,6 +49,7 @@ export default function AddGuestDialog({
   searchQuery,
   searchChange,
   hideButtonAdd,
+  handleRefresh,
 }: AddGuestDialogProps) {
   const [open, setOpen] = React.useState(false);
   const { callApi, loading } = useApi();
@@ -98,20 +101,32 @@ export default function AddGuestDialog({
         sx={{ mb: 2 }}
       >
         <SearchInput value={searchQuery} handleChange={searchChange} />
-        {!hideButtonAdd && <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={handleClickOpen}
-          sx={{
-            borderRadius: 1,
-            textTransform: "none",
-            px: 3,
-            py: 1,
-            fontWeight: 600,
-          }}
-        >
-          Add Guest
-        </Button>}
+        <Box>
+          <Button
+            variant="outlined"
+            startIcon={<Refresh />}
+            onClick={() => handleRefresh}
+            sx={{ mr: 2, borderRadius: 1, textTransform: "none", }}
+          >
+            Refresh
+          </Button>
+          {!hideButtonAdd && (
+            <Button
+              variant="contained"
+              startIcon={<AddIcon />}
+              onClick={handleClickOpen}
+              sx={{
+                borderRadius: 1,
+                textTransform: "none",
+                px: 3,
+                py: 1,
+                fontWeight: 600,
+              }}
+            >
+              Add Guest
+            </Button>
+          )}
+        </Box>
       </Stack>
 
       <Dialog

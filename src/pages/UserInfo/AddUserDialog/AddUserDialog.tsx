@@ -1,6 +1,6 @@
 // AddUserDialog.tsx (main component)
 import * as React from "react";
-import { Button, Stack } from "@mui/material";
+import { Box, Button, Stack } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -12,12 +12,14 @@ import { FormValues } from "./types";
 import useApi from "../../../hooks/APIHandler";
 import SearchInput from "../../../components/SearchInput";
 import { Property } from "../../PropertyInfo/PropertyList";
+import { Refresh } from "@mui/icons-material";
 
 interface AddUserDialogProps {
   handleChange: () => void;
   searchQuery: string;
   searchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  propertyId?:string;
+  propertyId?: string;
+  handleRefresh?:() => void;
 }
 
 export default function AddUserDialog({
@@ -25,6 +27,7 @@ export default function AddUserDialog({
   searchQuery,
   searchChange,
   propertyId,
+  handleRefresh,
 }: AddUserDialogProps) {
   const [open, setOpen] = React.useState(false);
   const { callApi, loading } = useApi();
@@ -110,20 +113,30 @@ export default function AddUserDialog({
         }}
       >
         <SearchInput value={searchQuery} handleChange={searchChange} />
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={handleClickOpen}
-          sx={{
-            borderRadius: 1,
-            textTransform: "none",
-            px: 3,
-            py: 1,
-            fontWeight: 600,
-          }}
-        >
-          Add User
-        </Button>
+        <Box>
+          <Button
+            variant="outlined"
+            startIcon={<Refresh />}
+            onClick={() => handleRefresh}
+            sx={{ mr: 2, borderRadius: 1, textTransform: "none" }}
+          >
+            Refresh
+          </Button>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={handleClickOpen}
+            sx={{
+              borderRadius: 1,
+              textTransform: "none",
+              px: 3,
+              py: 1,
+              fontWeight: 600,
+            }}
+          >
+            Add User
+          </Button>
+        </Box>
       </Stack>
 
       <UserFormDialog

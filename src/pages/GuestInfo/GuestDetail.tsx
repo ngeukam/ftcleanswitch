@@ -106,9 +106,7 @@ const GuestDetail: React.FC = () => {
   }
 
   if (!guest) {
-    return (
-      <ErrorPage/>
-    );
+    return <ErrorPage />;
   }
 
   return (
@@ -128,7 +126,8 @@ const GuestDetail: React.FC = () => {
           <Box display="flex" alignItems="center" gap={2} mb={3}>
             <Button
               startIcon={<ArrowBack />}
-              onClick={() => navigate("/guests")}
+              onClick={() => navigate(-1)}
+              color="inherit"
               variant="outlined"
             >
               Back to Guests
@@ -338,12 +337,14 @@ const GuestDetail: React.FC = () => {
                             </Typography>
                             <Typography variant="body2">
                               Duration: {booking.duration} nights •{" "}
-                              {booking.apartment.currency} {" "}
+                              {booking.apartment.currency}{" "}
                               {booking.totalPrice?.toLocaleString()}
                             </Typography>
                           </Box>
                           <Chip
-                            label={booking.status.toUpperCase().replaceAll("_", " ")}
+                            label={booking.status
+                              .toUpperCase()
+                              .replaceAll("_", " ")}
                             color={
                               booking.status === "checked_out"
                                 ? "error"

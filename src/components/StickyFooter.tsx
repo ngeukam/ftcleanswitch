@@ -21,8 +21,8 @@ export default function StickyFooter() {
       <Container maxWidth="sm">
         <Typography variant="body2" color="text.secondary" align="center">
           {" Made with ❤️ Copyright © "}
-          <Link color="inherit" href="https://github.com/">
-            Shoeb Tamboli
+          <Link color="inherit" href="#">
+            NGEUKAM Stephane
           </Link>{" "}
           {new Date().getFullYear()}
           {"."}

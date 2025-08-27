@@ -211,13 +211,12 @@ function PropertyList() {
         }}
       >
         <Toolbar />
-        <Container sx={{ mt: 4, mb: 4 }}>
+        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
           <AddPropertyDialog
-            properties={properties}
-            setProperties={setProperties}
             handleChange={getProperties}
             searchQuery={searchQuery}
             searchChange={(e) => setSearchQuery(e.target.value)}
+            handleRefresh={getProperties}
           />
           <Grid container spacing={2}>
             <Grid item xs={12}>

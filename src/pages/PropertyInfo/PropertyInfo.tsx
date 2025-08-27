@@ -122,7 +122,7 @@ const PropertyInfo = () => {
               ? theme.palette.grey[100]
               : theme.palette.grey[900],
           flexGrow: 1,
-          height: "100vh",
+          // height: "100vh",
           overflow: "auto",
         }}
       >
@@ -133,8 +133,7 @@ const PropertyInfo = () => {
               <Grid container spacing={2} alignItems="center">
                 <Grid item>
                   <IconButton
-                    component={Link}
-                    to="/properties-list"
+                    onClick={() => navigate(-1)}
                     color="inherit"
                   >
                     <ArrowBackIcon />

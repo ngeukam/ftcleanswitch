@@ -27,7 +27,6 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  useStepContext,
 } from "@mui/material";
 import {
   Person,
@@ -38,7 +37,6 @@ import {
   CalendarMonth,
   Email,
   Search,
-  ArrowBack,
   Save,
 } from "@mui/icons-material";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
@@ -50,7 +48,14 @@ import useApi from "../../hooks/APIHandler";
 import Appbar from "../../components/Appbar";
 import ImageUpload from "../../components/ImageUpload";
 import { useNavigate, useParams } from "react-router-dom";
-
+import StatusChip from "../../components/StatusChip";
+interface Refund {
+  id: string;
+  amount: number;
+  reason: string;
+  status: string;
+  created_at: string;
+}
 interface Apartment {
   id: string;
   name: string;
@@ -85,6 +90,7 @@ interface Booking {
   guest: Guest;
   status: string;
   totalPrice: number;
+  refunds?: Refund[];
 }
 
 const renderApartmentType = (type: string) => {
@@ -117,8 +123,8 @@ const getAvailableStatusOptions = (currentStatus: string) => {
 
   switch (currentStatus) {
     case "checked_in":
-      return allStatusOptions.filter(
-        (option) => option.value === "checked_out"
+      return allStatusOptions.filter((option) =>
+        ["checked_in", "checked_out"].includes(option.value)
       );
     case "checked_out":
       return allStatusOptions.filter(
@@ -126,7 +132,7 @@ const getAvailableStatusOptions = (currentStatus: string) => {
       ); // Only show current status
     case "cancelled":
       return allStatusOptions.filter((option) =>
-        ["confirmed", "upcoming", "active"].includes(option.value)
+        ["confirmed", "upcoming", "active", "cancelled"].includes(option.value)
       );
     default:
       return allStatusOptions.filter(
@@ -170,49 +176,122 @@ export default function BookingEdit() {
   const [originalBooking, setOriginalBooking] = useState<Booking | null>(null);
   const [status, setStatus] = useState<string>("");
   const availableStatusOptions = getAvailableStatusOptions(status);
-
-  // Fetch booking details and available apartments
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setIsLoadingApartments(true);
-
-        // Fetch booking details
-        const bookingResponse = await callApi({
-          url: `/apartments/bookings/${id}/`,
-          method: "GET",
-        });
-
-        if (bookingResponse?.status === 200) {
-          const bookingData = bookingResponse.data;
-          setOriginalBooking(bookingData);
-          setSelectedApartment(bookingData.apartment.id);
-          setStartDate(dayjs(bookingData.startDate));
-          setEndDate(dayjs(bookingData.endDate));
-          setGuestData(bookingData.guest);
-          setIsNewGuest(false);
-          setStatus(bookingData.status);
-        }
-
-        // Fetch available apartments
-        const apartmentsResponse = await callApi({
-          url: "/apartments/mixed-up/",
-          method: "GET",
-        });
-
-        if (apartmentsResponse?.status === 200) {
-          setApartments(apartmentsResponse.data);
-        }
-      } catch (err) {
-        console.error("Error fetching data:", err);
-      } finally {
-        setIsLoadingApartments(false);
+  const [showRefundDialog, setShowRefundDialog] = useState(false);
+  const [refundAmount, setRefundAmount] = useState<number>(0);
+  const [refundReason, setRefundReason] = useState<string>("");
+  const [refundStatus, setRefundStatus] = useState<string>("");
+  const [isProcessingRefund, setIsProcessingRefund] = useState(false);
+  const [bookingRefunds, setBookingRefunds] = useState<Refund[]>([]);
+  // Fetch refunds for this booking
+  const fetchRefunds = async () => {
+    try {
+      const response = await callApi({
+        url: `/bookings/${id}/process_refund/`,
+        method: "GET",
+      });
+      if (response?.status === 200) {
+        setBookingRefunds(response.data);
       }
-    };
-
-    if (id) {
-      fetchData();
+    } catch (err) {
+      console.error("Error fetching refunds:", err);
     }
+  };
+  // Fetch booking details and available apartments
+  const fetchBooking = async () => {
+    try {
+      setIsLoadingApartments(true);
+
+      // Fetch booking details
+      const bookingResponse = await callApi({
+        url: `/apartments/bookings/${id}/`,
+        method: "GET",
+      });
+
+      if (bookingResponse?.status === 200) {
+        const bookingData = bookingResponse.data;
+        setOriginalBooking(bookingData);
+        setSelectedApartment(bookingData.apartment.id);
+        setStartDate(dayjs(bookingData.startDate));
+        setEndDate(dayjs(bookingData.endDate));
+        setGuestData(bookingData.guest);
+        setIsNewGuest(false);
+        setStatus(bookingData.status);
+      }
+
+      // Fetch available apartments
+      const apartmentsResponse = await callApi({
+        url: "/apartments/mixed-up/",
+        method: "GET",
+      });
+
+      if (apartmentsResponse?.status === 200) {
+        setApartments(apartmentsResponse.data);
+      }
+      // Fetch refunds
+      await fetchRefunds();
+    } catch (err) {
+      console.error("Error fetching data:", err);
+    } finally {
+      setIsLoadingApartments(false);
+    }
+  };
+
+  // Calculate maximum refund amount
+  const calculateMaxRefund = () => {
+    if (!originalBooking) return 0;
+
+    const totalRefunded = bookingRefunds.reduce(
+      (sum, refund) => sum + refund.amount,
+      0
+    );
+    return Math.max(0, originalBooking.totalPrice - totalRefunded);
+  };
+
+  // Process refund
+  const handleProcessRefund = async () => {
+    if (!refundReason.trim()) {
+      toast.error("Please provide a reason for the refund");
+      return;
+    }
+
+    if (refundAmount <= 0) {
+      toast.error("Refund amount must be greater than 0");
+      return;
+    }
+
+    setIsProcessingRefund(true);
+    try {
+      const response = await callApi({
+        url: `/bookings/${id}/process_refund/`,
+        method: "POST",
+        body: {
+          amount: refundAmount,
+          reason: refundReason,
+          status: refundStatus,
+        },
+      });
+
+      if (response?.status === 200 || response?.status === 201) {
+        toast.success("Refund processed successfully!");
+        setShowRefundDialog(false);
+        setRefundAmount(0);
+        setRefundReason("");
+        setRefundStatus("pending");
+
+        // Refresh booking data and refunds
+        fetchBooking();
+        fetchRefunds();
+      }
+    } catch (err) {
+      console.error("Error processing refund:", err);
+    } finally {
+      setIsProcessingRefund(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!id) return;
+    fetchBooking();
   }, [id]);
 
   // Search for guests
@@ -558,6 +637,18 @@ export default function BookingEdit() {
                         ))}
                       </Select>
                     </FormControl>
+                    {/* Add Refund Button - Show only for certain statuses */}
+                    {(status === "cancelled" || status === "checked_out") && (
+                      <Button
+                        variant="outlined"
+                        color="secondary"
+                        onClick={() => setShowRefundDialog(true)}
+                        sx={{ mt: 1 }}
+                        fullWidth
+                      >
+                        Process Refund
+                      </Button>
+                    )}
                   </Grid>
 
                   {/* Date Time Pickers */}
@@ -929,6 +1020,140 @@ export default function BookingEdit() {
                 </CardContent>
               </Card>
             )}
+            {/* Refunds History Card */}
+            {bookingRefunds.length > 0 && (
+              <Card elevation={2} sx={{ mt: 3 }}>
+                <CardHeader
+                  title="Refund History"
+                  sx={{
+                    backgroundColor: theme.palette.warning.light,
+                    color: theme.palette.warning.contrastText,
+                    py: 1.5,
+                  }}
+                />
+                <CardContent>
+                  {bookingRefunds.map((refund) => (
+                    <Box
+                      key={refund.id}
+                      sx={{ mb: 2, p: 2, bgcolor: "grey.50", borderRadius: 1 }}
+                    >
+                      <Grid container spacing={2}>
+                        <Grid item xs={12} sm={6}>
+                          <Typography variant="body1">
+                            <strong>Amount:</strong>{" "}
+                            {originalBooking?.apartment.currency}
+                            {refund.amount.toFixed(2)}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            <strong>Status:</strong>
+                            <StatusChip
+                              status={refund.status}
+                              labels={{
+                                pending: "Pending",
+                                approved: "Approved",
+                                rejected: "Rejected",
+                              }}
+                              colors={{
+                                pending: "warning",
+                                approved: "success",
+                                rejected: "error",
+                              }}
+                            />
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                          <Typography variant="body2">
+                            <strong>Reason:</strong> {refund.reason}
+                          </Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            {dayjs(refund.created_at).format(
+                              "MMM D, YYYY h:mm A"
+                            )}
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                    </Box>
+                  ))}
+                </CardContent>
+              </Card>
+            )}
+            {/* Refund Dialog */}
+            <Dialog
+              open={showRefundDialog}
+              onClose={() => setShowRefundDialog(false)}
+              fullWidth
+              maxWidth="sm"
+            >
+              <DialogTitle>Process Refund</DialogTitle>
+              <DialogContent>
+                <Box sx={{ mt: 2 }}>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    gutterBottom
+                  >
+                    Maximum refundable amount:{" "}
+                    {originalBooking?.apartment.currency}
+                    {calculateMaxRefund().toFixed(2)}
+                  </Typography>
+
+                  <TextField
+                    fullWidth
+                    label="Refund Amount"
+                    type="number"
+                    value={refundAmount}
+                    onChange={(e) =>
+                      setRefundAmount(parseFloat(e.target.value) || 0)
+                    }
+                    inputProps={{
+                      min: 0,
+                      max: calculateMaxRefund(),
+                      step: 0.01,
+                    }}
+                    sx={{ mb: 2 }}
+                  />
+                  <FormControl fullWidth sx={{ mb: 2 }}>
+                    <InputLabel>Refund Status</InputLabel>
+                    <Select
+                      value={refundStatus}
+                      label="Refund Status"
+                      onChange={(e) => setRefundStatus(e.target.value)}
+                    >
+                      <MenuItem value="pending">Pending</MenuItem>
+                      <MenuItem value="approved">Approved</MenuItem>
+                      <MenuItem value="rejected">Rejected</MenuItem>
+                    </Select>
+                  </FormControl>
+                  <TextField
+                    fullWidth
+                    label="Refund Reason"
+                    multiline
+                    rows={3}
+                    value={refundReason}
+                    onChange={(e) => setRefundReason(e.target.value)}
+                    placeholder="Please provide a reason for the refund..."
+                  />
+                </Box>
+              </DialogContent>
+              <DialogActions>
+                <Button
+                  onClick={() => setShowRefundDialog(false)}
+                  disabled={isProcessingRefund}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleProcessRefund}
+                  variant="contained"
+                  disabled={isProcessingRefund || refundAmount <= 0}
+                  startIcon={
+                    isProcessingRefund ? <CircularProgress size={20} /> : null
+                  }
+                >
+                  {isProcessingRefund ? "Processing..." : "Process Refund"}
+                </Button>
+              </DialogActions>
+            </Dialog>
           </Container>
         </LocalizationProvider>
       </Box>

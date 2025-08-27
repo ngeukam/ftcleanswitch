@@ -275,7 +275,7 @@ function PropertyGuests() {
         }}
       >
         <Toolbar />
-        <Container sx={{ mt: 4, mb: 4 }}>
+        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
           {/* Search and Add Button */}
           <AddGuestDialog
             handleChange={getGuests}

@@ -185,7 +185,7 @@ function ApartmentList() {
 
   const renderStatusChips = (params: GridRenderCellParams) => {
     return (
-      <Box sx={{ display: "flex", gap: 1 }}>
+      <Box sx={{display: "flex", flexDirection:"column", gap:1}}>
         <Chip
           icon={<Hotel fontSize="small" />}
           label={params.row.inService ? "In Service" : "Out of Service"}
@@ -287,7 +287,7 @@ function ApartmentList() {
       {
         field: "status",
         headerName: "Status",
-        width: 250,
+        width: 180,
         renderCell: renderStatusChips,
       },
     ];
@@ -329,7 +329,7 @@ function ApartmentList() {
         }}
       >
         <Toolbar />
-        <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
+        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
           <AddApartmentDialog
             properties={properties}
             apartments={apartments}
@@ -337,6 +337,7 @@ function ApartmentList() {
             handleChange={getApartments}
             searchQuery={searchQuery}
             searchChange={(e) => setSearchQuery(e.target.value)}
+            handleRefresh={getApartments}
           />
           <Grid container spacing={3}>
             <Grid item xs={12}>

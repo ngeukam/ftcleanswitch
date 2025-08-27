@@ -2,7 +2,7 @@ import * as React from "react";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { RouterProvider } from "react-router-dom";
-//import StickyFooter from "./components/StickyFooter";
+import StickyFooter from "./components/StickyFooter";
 import { router } from "./router";
 //import { themeOptions } from "./themeOptions";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -20,14 +20,14 @@ export default function App() {
       <CssBaseline />
       <React.Suspense
         fallback={
-          <Box sx={{ display: "flex" }}>
+          <Box sx={{ display: "flex", align:"center" }}>
             <CircularProgress />
           </Box>
         }
       >
         <RouterProvider router={router} />
         <ToastContainer position="top-right"theme="colored" autoClose={3000} hideProgressBar={false} style={{marginBottom:'30px'}} />
-        {/* <StickyFooter /> */}
+        <StickyFooter />
       </React.Suspense>
     </ThemeProvider>
   );

@@ -23,7 +23,7 @@ import { toast } from "react-toastify";
 // import TaskTemplateDialog from "./TaskTemplateDialog";
 import { getUser } from "../../utils/Helper";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowBack } from "@mui/icons-material";
+import { ArrowBack, Refresh } from "@mui/icons-material";
 
 interface AddTaskDialogProps {
   handleChange: () => void;
@@ -31,6 +31,7 @@ interface AddTaskDialogProps {
   searchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   userId?: string;
   propertyId?: string;
+  handleRefresh?: () => void;
 }
 interface User {
   id: number;
@@ -76,6 +77,7 @@ const AddTaskDialog: React.FC<AddTaskDialogProps> = ({
   searchChange,
   userId,
   propertyId,
+  handleRefresh,
 }) => {
   const { callApi } = useApi();
   const [open, setOpen] = useState(false);
@@ -287,8 +289,15 @@ const AddTaskDialog: React.FC<AddTaskDialogProps> = ({
         sx={{ mb: 2 }}
       >
         <SearchInput value={searchQuery} handleChange={searchChange} />
-        <Stack direction="row" spacing={2}>
-          {/* <TaskTemplateDialog refreshTemplates={fetchTemplates} /> */}
+        <Box>
+          <Button
+            variant="outlined"
+            startIcon={<Refresh />}
+            onClick={() => handleRefresh}
+            sx={{ mr: 2, borderRadius: 1, textTransform: "none" }}
+          >
+            Refresh
+          </Button>
           <Button
             variant="contained"
             startIcon={<AddIcon />}
@@ -303,7 +312,7 @@ const AddTaskDialog: React.FC<AddTaskDialogProps> = ({
           >
             Add Task
           </Button>
-        </Stack>
+        </Box>
       </Stack>
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
         <DialogTitle>Add New Task</DialogTitle>

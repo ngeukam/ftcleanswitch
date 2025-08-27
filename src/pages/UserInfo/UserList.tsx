@@ -327,11 +327,12 @@ const UserList = () => {
         }}
       >
         <Toolbar />
-        <Container sx={{ mt: 4, mb: 4 }}>
+        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
           <AddUserDialog
             handleChange={fetchUsers}
             searchQuery={searchQuery}
             searchChange={(e) => setSearchQuery(e.target.value)}
+            handleRefresh={fetchUsers}
           />
           <Grid container spacing={2}>
             <Grid item xs={12}>

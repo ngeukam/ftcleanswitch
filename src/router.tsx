@@ -38,6 +38,7 @@ import PropertyTasksTemplate from "./pages/PropertyInfo/PropertyTasksTemplate";
 import PropertyBookings from "./pages/PropertyInfo/PropertyBookings";
 import PropertyGuests from "./pages/PropertyInfo/PropertyGuests";
 import PropertyAddBooking from "./pages/PropertyInfo/PropertyAddBooking";
+import RefundList from "./pages/Refunds/RefundList";
 
 const USER_TYPES = {
   ADMIN_USER: "admin",
@@ -93,6 +94,14 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedElement>
         <BookingList />
+      </ProtectedElement>
+    ),
+  },
+  {
+    path: "/refunds",
+    element: (
+      <ProtectedElement>
+        <RefundList />
       </ProtectedElement>
     ),
   },
@@ -163,9 +172,9 @@ export const router = createBrowserRouter([
   {
     path: "/properties-list",
     element: (
-      <AdminElement>
+      <ProtectedElement>
         <PropertyList />
-      </AdminElement>
+      </ProtectedElement>
     ),
   },
    {
@@ -227,9 +236,9 @@ export const router = createBrowserRouter([
   {
     path: "/properties/:id",
     element: (
-      <AdminElement>
+      <ProtectedElement>
         <PropertyDetails />
-      </AdminElement>
+      </ProtectedElement>
     ),
   },
   {

@@ -22,6 +22,7 @@ import {
   Business,
   CheckCircle,
   Warning,
+  Refresh,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import Appbar from "../../components/Appbar";
@@ -208,7 +209,8 @@ export default function BookingList() {
             <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
               <Business fontSize="small" color="primary" />
               <Typography variant="body2" fontWeight="bold" noWrap>
-                {params.row.apartment?.number} - {params.row.apartment?.name}
+                Apt {params.row.apartment?.number} -{" "}
+                {params.row.apartment?.name}
               </Typography>
             </Box>
 
@@ -342,20 +344,30 @@ export default function BookingList() {
                   value={searchQuery}
                   handleChange={(e) => setSearchQuery(e.target.value)}
                 />
-                <Button
-                  variant="contained"
-                  startIcon={<Add />}
-                  onClick={() => navigate("/bookings/new")}
-                  sx={{
-                    borderRadius: 1,
-                    textTransform: "none",
-                    px: 3,
-                    py: 1,
-                    fontWeight: 600,
-                  }}
-                >
-                  New Booking
-                </Button>
+                <Box>
+                  <Button
+                    variant="outlined"
+                    startIcon={<Refresh />}
+                    onClick={() => getBookings}
+                    sx={{ mr: 2, borderRadius: 1, textTransform: "none" }}
+                  >
+                    Refresh
+                  </Button>
+                  <Button
+                    variant="contained"
+                    startIcon={<Add />}
+                    onClick={() => navigate("/bookings/new")}
+                    sx={{
+                      borderRadius: 1,
+                      textTransform: "none",
+                      px: 3,
+                      py: 1,
+                      fontWeight: 600,
+                    }}
+                  >
+                    New Booking
+                  </Button>
+                </Box>
               </Stack>
               <Paper elevation={3} sx={{ p: 2 }}>
                 <DataGrid

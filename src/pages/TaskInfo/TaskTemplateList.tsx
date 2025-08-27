@@ -331,7 +331,7 @@ function TaskTemplateList() {
         }}
       >
         <Toolbar />
-        <Container sx={{ mt: 4, mb: 4 }}>
+        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
           <AddTaskTemplateDialog refreshTemplates={fetchTemplates} />
           <Grid container spacing={2}>
             <Grid item xs={12}>

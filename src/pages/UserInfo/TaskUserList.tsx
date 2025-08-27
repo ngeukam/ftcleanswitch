@@ -424,6 +424,7 @@ function TaskUserList() {
             searchQuery={searchQuery}
             searchChange={(e) => setSearchQuery(e.target.value)}
             userId={`${id}`}
+            handleRefresh={getTasks}
           />
 
           <Grid container spacing={2}>

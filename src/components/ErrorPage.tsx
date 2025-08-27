@@ -1,8 +1,9 @@
 import * as React from "react";
 import { Button, Typography, Stack, Box } from "@mui/material";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function ErrorPage() {
+  const navigate = useNavigate();
   return (
     <Stack
       direction="column"
@@ -38,14 +39,11 @@ export default function ErrorPage() {
       <Typography variant="body2" gutterBottom>
         The page you are looking for does not seem to exist
       </Typography>
-      <Link
-        to="/dashboard"
-        style={{ textDecoration: "none", color: "inherit" }}
-      >
-        <Button variant="contained" sx={{ mt: 4 }}>
-          Go to home
+     
+        <Button variant="contained" sx={{ mt: 4 }} onClick={()=>navigate(-1)}>
+          Go Back
         </Button>
-      </Link>
+      
     </Stack>
   );
 }

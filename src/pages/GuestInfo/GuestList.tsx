@@ -262,12 +262,13 @@ function GuestList() {
         }}
       >
         <Toolbar />
-        <Container sx={{ mt: 4, mb: 4 }}>
+        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
           {/* Search and Add Button */}
           <AddGuestDialog
-            handleChange={getGuests}
+            handleChange={() =>setGuests}
             searchQuery={searchQuery}
             searchChange={(e) => setSearchQuery(e.target.value)}
+            handleRefresh={getGuests}
           />
           {/* Data Grid */}
           <Grid container spacing={2}>
